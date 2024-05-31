@@ -10,6 +10,29 @@
   <body>
     <a-scene embedded arjs="patternRatio:0.90" vr-mode-ui="enabled: false">
       <a-assets>
+        <!-- Video assets -->
+        <video
+          id="my-video1"
+          src="assets/1.mp4"
+          crossorigin="anonymous"
+          playsinline
+          webkit-playsinline
+        ></video>
+        <video
+          id="my-video2"
+          src="assets/2.mp4"
+          crossorigin="anonymous"
+          playsinline
+          webkit-playsinline
+        ></video>
+        <video
+          id="my-video3"
+          src="assets/3.mp4"
+          crossorigin="anonymous"
+          playsinline
+          webkit-playsinline
+        ></video>
+
         <!-- Thumbnail images for each video -->
         <img id="thumbnail1" src="assets/1.jpg" />
         <img id="thumbnail2" src="assets/2.jpg" />
@@ -24,6 +47,7 @@
       >
         <a-video
           id="arVideo1"
+          src="#my-video1"
           width="2.67"
           height="1.5"
           position="0 0 0.01"
@@ -49,6 +73,7 @@
       >
         <a-video
           id="arVideo2"
+          src="#my-video2"
           width="2.67"
           height="1.5"
           position="0 0 0.01"
@@ -74,6 +99,7 @@
       >
         <a-video
           id="arVideo3"
+          src="#my-video3"
           width="2.67"
           height="1.5"
           position="0 0 0.01"
@@ -96,42 +122,36 @@
 
     <script>
       // Function to handle video playback
-      function playVideo(videoId, arVideoId, thumbnailImgId, videoSrc) {
+      function playVideo(videoId, arVideoId, thumbnailImgId) {
         const video = document.getElementById(videoId);
         const arVideo = document.getElementById(arVideoId);
         const thumbnailImg = document.getElementById(thumbnailImgId);
 
-        // Set the video source to the actual video file
-        video.setAttribute("src", videoSrc);
-        video.load();
+        thumbnailImg.setAttribute("visible", "false");
+        arVideo.setAttribute("visible", "true");
 
-        // Ensure the video is played once it is fully loaded
-        video.oncanplaythrough = () => {
-          thumbnailImg.setAttribute("visible", "false");
-          arVideo.setAttribute("visible", "true");
-          video.play().catch((error) => {
-            console.error("Video play error:", error);
-          });
-        };
+        video.play().catch((error) => {
+          console.error("Video play error:", error);
+        });
       }
 
       // Event listeners for each marker
       document.querySelector("#marker1").addEventListener("markerFound", () => {
-        playVideo("my-video1", "arVideo1", "thumbnailImg1", "assets/1.mp4");
+        playVideo("my-video1", "arVideo1", "thumbnailImg1");
       });
       document.querySelector("#marker1").addEventListener("markerLost", () => {
         document.getElementById("my-video1").pause();
       });
 
       document.querySelector("#marker2").addEventListener("markerFound", () => {
-        playVideo("my-video2", "arVideo2", "thumbnailImg2", "assets/2.mp4");
+        playVideo("my-video2", "arVideo2", "thumbnailImg2");
       });
       document.querySelector("#marker2").addEventListener("markerLost", () => {
         document.getElementById("my-video2").pause();
       });
 
       document.querySelector("#marker3").addEventListener("markerFound", () => {
-        playVideo("my-video3", "arVideo3", "thumbnailImg3", "assets/3.mp4");
+        playVideo("my-video3", "arVideo3", "thumbnailImg3");
       });
       document.querySelector("#marker3").addEventListener("markerLost", () => {
         document.getElementById("my-video3").pause();
