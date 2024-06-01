@@ -3,30 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>AR Video Player</title>
-    <style>
-      /* Loading overlay style */
-      #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        z-index: 1000;
-      }
-    </style>
+    <title>ฟังเสียง สำเนียงส็อกแส็กของนักรบผ้าถุงแห่งจะนะ</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
   <body>
-    <div id="loading-overlay">Loading the module...</div>
-
     <a-scene embedded arjs="patternRatio:0.90" vr-mode-ui="enabled: false">
       <a-assets>
         <!-- Video assets -->
@@ -36,6 +17,7 @@
           crossorigin="anonymous"
           playsinline
           webkit-playsinline
+          preload="auto"
         ></video>
         <video
           id="my-video2"
@@ -43,6 +25,7 @@
           crossorigin="anonymous"
           playsinline
           webkit-playsinline
+          preload="auto"
         ></video>
         <video
           id="my-video3"
@@ -50,6 +33,7 @@
           crossorigin="anonymous"
           playsinline
           webkit-playsinline
+          preload="auto"
         ></video>
 
         <!-- Thumbnail images for each video -->
@@ -140,72 +124,58 @@
     </a-scene>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const videos = document.querySelectorAll("video");
-        let videosLoaded = 0;
+      // Function to handle video playback
+      function playVideo(videoId, arVideoId, thumbnailImgId) {
+        const video = document.getElementById(videoId);
+        const arVideo = document.getElementById(arVideoId);
+        const thumbnailImg = document.getElementById(thumbnailImgId);
 
-        // Function to hide the loading overlay
-        const hideLoadingOverlay = () => {
-          document.getElementById("loading-overlay").style.display = "none";
-        };
+        thumbnailImg.setAttribute("visible", "false");
+        arVideo.setAttribute("visible", "true");
 
-        // Event listener for each video to check if they are fully loaded
-        videos.forEach((video) => {
-          video.addEventListener("canplaythrough", () => {
-            videosLoaded++;
-            if (videosLoaded === videos.length) {
-              hideLoadingOverlay();
-            }
-          });
+        video.play().catch((error) => {
+          console.error("Video play error:", error);
         });
+      }
 
-        // Function to handle video playback
-        function playVideo(videoId, arVideoId, thumbnailImgId) {
-          const video = document.getElementById(videoId);
-          const arVideo = document.getElementById(arVideoId);
-          const thumbnailImg = document.getElementById(thumbnailImgId);
+      // Event listeners for each marker
+      document.querySelector("#marker1").addEventListener("markerFound", () => {
+        playVideo("my-video1", "arVideo1", "thumbnailImg1");
+      });
+      document.querySelector("#marker1").addEventListener("markerLost", () => {
+        const video = document.getElementById("my-video1");
+        video.pause();
+        video.currentTime = 0;
+        document.getElementById("arVideo1").setAttribute("visible", "false");
+        document
+          .getElementById("thumbnailImg1")
+          .setAttribute("visible", "true");
+      });
 
-          thumbnailImg.setAttribute("visible", "false");
-          arVideo.setAttribute("visible", "true");
+      document.querySelector("#marker2").addEventListener("markerFound", () => {
+        playVideo("my-video2", "arVideo2", "thumbnailImg2");
+      });
+      document.querySelector("#marker2").addEventListener("markerLost", () => {
+        const video = document.getElementById("my-video2");
+        video.pause();
+        video.currentTime = 0;
+        document.getElementById("arVideo2").setAttribute("visible", "false");
+        document
+          .getElementById("thumbnailImg2")
+          .setAttribute("visible", "true");
+      });
 
-          video.play().catch((error) => {
-            console.error("Video play error:", error);
-          });
-        }
-
-        // Event listeners for each marker
+      document.querySelector("#marker3").addEventListener("markerFound", () => {
+        playVideo("my-video3", "arVideo3", "thumbnailImg3");
+      });
+      document.querySelector("#marker3").addEventListener("markerLost", () => {
+        const video = document.getElementById("my-video3");
+        video.pause();
+        video.currentTime = 0;
+        document.getElementById("arVideo3").setAttribute("visible", "false");
         document
-          .querySelector("#marker1")
-          .addEventListener("markerFound", () => {
-            playVideo("my-video1", "arVideo1", "thumbnailImg1");
-          });
-        document
-          .querySelector("#marker1")
-          .addEventListener("markerLost", () => {
-            document.getElementById("my-video1").pause();
-          });
-
-        document
-          .querySelector("#marker2")
-          .addEventListener("markerFound", () => {
-            playVideo("my-video2", "arVideo2", "thumbnailImg2");
-          });
-        document
-          .querySelector("#marker2")
-          .addEventListener("markerLost", () => {
-            document.getElementById("my-video2").pause();
-          });
-
-        document
-          .querySelector("#marker3")
-          .addEventListener("markerFound", () => {
-            playVideo("my-video3", "arVideo3", "thumbnailImg3");
-          });
-        document
-          .querySelector("#marker3")
-          .addEventListener("markerLost", () => {
-            document.getElementById("my-video3").pause();
-          });
+          .getElementById("thumbnailImg3")
+          .setAttribute("visible", "true");
       });
     </script>
   </body>
