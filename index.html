@@ -25,7 +25,7 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
   <body>
-    <div id="loading-overlay">กำลังโหลดโมดูล...</div>
+    <div id="loading-overlay">Loading the module...</div>
 
     <a-scene embedded arjs="patternRatio:0.90" vr-mode-ui="enabled: false">
       <a-assets>
@@ -141,30 +141,23 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Function to check if all videos are loaded
-        const checkVideosLoaded = () => {
-          const videos = document.querySelectorAll("video");
-          let allLoaded = true;
-          videos.forEach((video) => {
-            if (!video.readyState || video.readyState < 3) {
-              allLoaded = false;
-            }
-          });
-          return allLoaded;
-        };
+        const videos = document.querySelectorAll("video");
+        let videosLoaded = 0;
 
         // Function to hide the loading overlay
         const hideLoadingOverlay = () => {
           document.getElementById("loading-overlay").style.display = "none";
         };
 
-        // Polling to check when all videos are loaded
-        const interval = setInterval(() => {
-          if (checkVideosLoaded()) {
-            hideLoadingOverlay();
-            clearInterval(interval);
-          }
-        }, 100);
+        // Event listener for each video to check if they are fully loaded
+        videos.forEach((video) => {
+          video.addEventListener("canplaythrough", () => {
+            videosLoaded++;
+            if (videosLoaded === videos.length) {
+              hideLoadingOverlay();
+            }
+          });
+        });
 
         // Function to handle video playback
         function playVideo(videoId, arVideoId, thumbnailImgId) {
